@@ -3,6 +3,7 @@ package com.example.springdatacrudtesting.Controller;
 import com.example.springdatacrudtesting.Repository.EmployeeRepository;
 import com.example.springdatacrudtesting.entity.Employee;
 import com.example.springdatacrudtesting.services.EmployeeService;
+import com.example.springdatacrudtesting.utils.APIResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 
-@Controller
+@RestController
 public class EmployeeController {
 
     @Autowired
@@ -28,7 +29,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/employee/{id}")
-    public ResponseEntity<Employee>  getEmployeeById(@PathVariable("id") long id){
+    public ResponseEntity<Employee>  getEmployeeById(@PathVariable("id") int id){
         Optional<Employee> employeeData=employeeRepository.findById(id);
         return employeeData.map(employee -> new ResponseEntity<>(employee, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
@@ -38,7 +39,7 @@ public class EmployeeController {
         return employeeService.createEmployee(employee.getFirstName(),employee.getLastName(),employee.getEmail());
     }
     @PutMapping("/employee/{id}")
-    public ResponseEntity<Employee> updateEmployee(@PathVariable("id") long id){
+    public ResponseEntity<Employee> updateEmployee(@PathVariable("id") int id){
         Optional<Employee> employeeData=employeeRepository.findById(id);
         if(employeeData.isPresent()){
             Employee _employee=employeeData.get();
@@ -52,12 +53,21 @@ public class EmployeeController {
     }
 
     @DeleteMapping("/employee/{id}")
-    public ResponseEntity<HttpStatus> deleteEmployee(@PathVariable("id") long id){
+    public ResponseEntity<HttpStatus> deleteEmployee(@PathVariable("id") int id){
         try{
             employeeRepository.deleteById(id);
             return  new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }catch (Exception e){
             return  new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("/employees/{id}")
+    public  ResponseEntity<?> getById(@PathVariable(name="id")int id){
+        Employee employee=employeeService.getById(id);
+        if(employee!=null){
+            return  ResponseEntity.ok(employee);
+        }
+        return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(new APIResponse(false,"Employee not found"));
     }
 }
