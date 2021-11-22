@@ -42,8 +42,8 @@ public class EmployeeRepositoryTest {
     @Test
     @Order(2)
     public  void getEmployeesTest(){
-        Employee employee=employeeRepository.findById(1L).get();
-        Assertions.assertThat(employee.getId()).isEqualTo(1L);
+        Employee employee=employeeRepository.findById(1).get();
+        Assertions.assertThat(employee.getId()).isEqualTo(1);
     }
 
     @Test
@@ -57,7 +57,7 @@ public class EmployeeRepositoryTest {
     @Order(4)
     @Rollback(value=false)
     public void updateEmployeeTest(){
-        Employee  employee=employeeRepository.findById(1L).get();
+        Employee  employee=employeeRepository.findById(1).get();
         employee.setEmail("testingemail@gmail.com");
         Employee updatedEmployee=employeeRepository.save(employee);
         Assertions.assertThat(updatedEmployee.getEmail()).isEqualTo("testingemail@gmail.com");
@@ -65,7 +65,7 @@ public class EmployeeRepositoryTest {
     @Test
     @Order(5)
     public void deleteEmployeeTest(){
-        Employee employee=employeeRepository.findById(1L).get();
+        Employee employee=employeeRepository.findById(1).get();
         employeeRepository.delete(employee);
         Employee employee1=new Employee();
         employee1.setFirstName("Irakoze");
